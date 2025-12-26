@@ -22,6 +22,8 @@ wheels/
 venv/
 .venv/
 ENV/
+rumorlens/
+backend/rumorlens/
 
 # Node
 node_modules/

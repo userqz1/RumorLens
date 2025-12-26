@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { Card, Statistic, Button, Row, Col } from 'ant-design-vue'
+import { Card, Statistic, Row, Col } from 'ant-design-vue'
 import {
   SearchOutlined,
   FileAddOutlined,
@@ -98,13 +98,17 @@ const quickActions = [
               title="Rumor Rate"
               :value="((analysisStore.overview?.rumor_rate || 0) * 100).toFixed(1)"
               suffix="%"
-              :prefix="analysisStore.overview?.rumor_rate > 0.5 ? ArrowUpOutlined : ArrowDownOutlined"
               :value-style="{
-                color: analysisStore.overview?.rumor_rate > 0.5
+                color: (analysisStore.overview?.rumor_rate ?? 0) > 0.5
                   ? 'var(--color-accent)'
                   : 'var(--color-success)'
               }"
-            />
+            >
+              <template #prefix>
+                <ArrowUpOutlined v-if="(analysisStore.overview?.rumor_rate ?? 0) > 0.5" />
+                <ArrowDownOutlined v-else />
+              </template>
+            </Statistic>
           </Card>
         </Col>
       </Row>

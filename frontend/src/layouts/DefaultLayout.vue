@@ -39,8 +39,8 @@ const menuItems = [
   { key: 'dashboard', icon: DashboardOutlined, label: 'Dashboard', path: '/dashboard' },
 ]
 
-function handleMenuClick({ key }: { key: string }) {
-  const item = menuItems.find(m => m.key === key)
+function handleMenuClick({ key }: { key: string | number }) {
+  const item = menuItems.find(m => m.key === String(key))
   if (item) {
     router.push(item.path)
   }

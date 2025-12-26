@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { Detection, PaginatedResponse } from '@/types'
+import type { Detection } from '@/types'
 import { detectionApi, type HistoryFilters } from '@/api/detection'
 
 export const useDetectionStore = defineStore('detection', () => {

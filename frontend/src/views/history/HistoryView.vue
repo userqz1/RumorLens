@@ -1,18 +1,24 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { Card, Table, Tag, Button, Select, DatePicker, Space, Modal, message } from 'ant-design-vue'
-import { DeleteOutlined, EyeOutlined, ReloadOutlined } from '@ant-design/icons-vue'
+import { DeleteOutlined, ReloadOutlined } from '@ant-design/icons-vue'
 import { useDetectionStore } from '@/stores/detection'
-import type { RiskLevel, Detection } from '@/types'
+import type { RiskLevel } from '@/types'
+import type { Dayjs } from 'dayjs'
+import type { Key } from 'ant-design-vue/es/table/interface'
 import dayjs from 'dayjs'
 
 const detectionStore = useDetectionStore()
 
 const selectedRowKeys = ref<string[]>([])
-const filters = ref({
-  is_rumor: undefined as boolean | undefined,
-  risk_level: undefined as string | undefined,
-  dateRange: [] as any[],
+const filters = ref<{
+  is_rumor: string | undefined
+  risk_level: string | undefined
+  dateRange: [Dayjs, Dayjs] | undefined
+}>({
+  is_rumor: undefined,
+  risk_level: undefined,
+  dateRange: undefined,
 })
 
 const loading = computed(() => detectionStore.loading)
@@ -72,12 +78,12 @@ async function fetchData(page = 1) {
   const params: any = { page }
 
   if (filters.value.is_rumor !== undefined) {
-    params.is_rumor = filters.value.is_rumor
+    params.is_rumor = filters.value.is_rumor === 'true'
   }
   if (filters.value.risk_level) {
     params.risk_level = filters.value.risk_level
   }
-  if (filters.value.dateRange?.length === 2) {
+  if (filters.value.dateRange) {
     params.start_date = filters.value.dateRange[0].toISOString()
     params.end_date = filters.value.dateRange[1].toISOString()
   }
@@ -97,7 +103,7 @@ function handleClearFilters() {
   filters.value = {
     is_rumor: undefined,
     risk_level: undefined,
-    dateRange: [],
+    dateRange: undefined,
   }
   fetchData(1)
 }
@@ -146,12 +152,12 @@ function formatDate(dateStr: string) {
   return dayjs(dateStr).format('YYYY-MM-DD HH:mm')
 }
 
-const rowSelection = {
-  selectedRowKeys: selectedRowKeys,
-  onChange: (keys: string[]) => {
-    selectedRowKeys.value = keys
+const rowSelection = computed(() => ({
+  selectedRowKeys: selectedRowKeys.value,
+  onChange: (keys: Key[]) => {
+    selectedRowKeys.value = keys.map(k => String(k))
   },
-}
+}))
 </script>
 
 <template>
@@ -189,8 +195,8 @@ const rowSelection = {
           allow-clear
           @change="handleFilterChange"
         >
-          <Select.Option :value="true">Rumor</Select.Option>
-          <Select.Option :value="false">Verified</Select.Option>
+          <Select.Option value="true">Rumor</Select.Option>
+          <Select.Option value="false">Verified</Select.Option>
         </Select>
 
         <Select

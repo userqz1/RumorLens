@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { Card, Upload, Button, Table, Tag, Progress, message } from 'ant-design-vue'
 import { UploadOutlined, DeleteOutlined } from '@ant-design/icons-vue'
 import { useDetectionStore } from '@/stores/detection'
@@ -63,12 +63,6 @@ function handleBeforeUpload(file: File) {
   }
   reader.readAsText(file)
   return false // Prevent default upload
-}
-
-function handleAddText(text: string) {
-  if (text.trim()) {
-    textList.value.push(text.trim())
-  }
 }
 
 function handleRemoveText(index: number) {
