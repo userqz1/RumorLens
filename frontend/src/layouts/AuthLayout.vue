@@ -6,8 +6,8 @@ import { RouterView } from 'vue-router'
   <div class="auth-layout">
     <div class="auth-container">
       <div class="auth-header">
-        <h1 class="auth-logo">RumorLens</h1>
-        <p class="auth-tagline">Weibo Rumor Detection Platform</p>
+        <h1 class="auth-logo">谣言透镜</h1>
+        <p class="auth-tagline">微博谣言检测平台</p>
       </div>
       <div class="auth-content">
         <RouterView />
@@ -16,15 +16,15 @@ import { RouterView } from 'vue-router'
     <div class="auth-decoration">
       <div class="decoration-text">
         <span class="decoration-number">01</span>
-        <p class="decoration-label">Detect</p>
+        <p class="decoration-label">检测</p>
       </div>
       <div class="decoration-text">
         <span class="decoration-number">02</span>
-        <p class="decoration-label">Analyze</p>
+        <p class="decoration-label">分析</p>
       </div>
       <div class="decoration-text">
         <span class="decoration-number">03</span>
-        <p class="decoration-label">Verify</p>
+        <p class="decoration-label">验证</p>
       </div>
     </div>
   </div>

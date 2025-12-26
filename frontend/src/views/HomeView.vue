@@ -27,27 +27,27 @@ onMounted(async () => {
 
 const quickActions = [
   {
-    title: 'Single Detection',
-    description: 'Analyze a single text for rumor detection',
+    title: '谣言检测',
+    description: '分析单条文本，判断是否为谣言',
     icon: SearchOutlined,
     path: '/detection',
     primary: true,
   },
   {
-    title: 'Batch Detection',
-    description: 'Upload and analyze multiple texts at once',
+    title: '批量检测',
+    description: '上传并批量分析多条文本',
     icon: FileAddOutlined,
     path: '/detection/batch',
   },
   {
-    title: 'History',
-    description: 'View your past detection records',
+    title: '历史记录',
+    description: '查看过往的检测记录',
     icon: HistoryOutlined,
     path: '/history',
   },
   {
-    title: 'Dashboard',
-    description: 'Visualize your detection analytics',
+    title: '数据分析',
+    description: '可视化展示检测数据分析',
     icon: DashboardOutlined,
     path: '/dashboard',
   },
@@ -57,9 +57,9 @@ const quickActions = [
 <template>
   <div class="home-view">
     <header class="home-header">
-      <h1 class="home-title">Welcome to RumorLens</h1>
+      <h1 class="home-title">欢迎使用谣言透镜</h1>
       <p class="home-subtitle">
-        Your intelligent platform for Weibo rumor detection and analysis
+        智能微博谣言检测与分析平台
       </p>
     </header>
 
@@ -69,7 +69,7 @@ const quickActions = [
         <Col :xs="24" :sm="12" :lg="6">
           <Card class="stat-card" :loading="loading">
             <Statistic
-              title="Total Detections"
+              title="检测总数"
               :value="analysisStore.overview?.total_detections || 0"
             />
           </Card>
@@ -77,7 +77,7 @@ const quickActions = [
         <Col :xs="24" :sm="12" :lg="6">
           <Card class="stat-card" :loading="loading">
             <Statistic
-              title="Rumors Detected"
+              title="检出谣言"
               :value="analysisStore.overview?.total_rumors || 0"
               :value-style="{ color: 'var(--color-accent)' }"
             />
@@ -86,7 +86,7 @@ const quickActions = [
         <Col :xs="24" :sm="12" :lg="6">
           <Card class="stat-card" :loading="loading">
             <Statistic
-              title="Verified Content"
+              title="可信内容"
               :value="analysisStore.overview?.total_verified || 0"
               :value-style="{ color: 'var(--color-success)' }"
             />
@@ -95,7 +95,7 @@ const quickActions = [
         <Col :xs="24" :sm="12" :lg="6">
           <Card class="stat-card" :loading="loading">
             <Statistic
-              title="Rumor Rate"
+              title="谣言占比"
               :value="((analysisStore.overview?.rumor_rate || 0) * 100).toFixed(1)"
               suffix="%"
               :value-style="{
@@ -116,7 +116,7 @@ const quickActions = [
 
     <!-- Quick Actions -->
     <section class="actions-section">
-      <h2 class="section-title">Quick Actions</h2>
+      <h2 class="section-title">快捷操作</h2>
       <div class="actions-grid">
         <Card
           v-for="action in quickActions"

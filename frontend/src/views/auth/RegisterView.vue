@@ -18,27 +18,27 @@ const loading = ref(false)
 
 async function handleSubmit() {
   if (!formState.email || !formState.username || !formState.password) {
-    message.error('Please fill in all fields')
+    message.error('请填写所有字段')
     return
   }
 
   if (formState.password !== formState.confirmPassword) {
-    message.error('Passwords do not match')
+    message.error('两次密码输入不一致')
     return
   }
 
   if (formState.password.length < 6) {
-    message.error('Password must be at least 6 characters')
+    message.error('密码长度至少为6位')
     return
   }
 
   loading.value = true
   try {
     await authStore.register(formState.email, formState.username, formState.password)
-    message.success('Registration successful')
+    message.success('注册成功')
     router.push('/')
   } catch (error: any) {
-    message.error(error.response?.data?.detail || 'Registration failed')
+    message.error(error.response?.data?.detail || '注册失败')
   } finally {
     loading.value = false
   }
@@ -47,8 +47,8 @@ async function handleSubmit() {
 
 <template>
   <div class="register-view">
-    <h2 class="form-title">Create Account</h2>
-    <p class="form-subtitle">Join RumorLens to start detecting rumors</p>
+    <h2 class="form-title">注册账号</h2>
+    <p class="form-subtitle">加入谣言透镜，开始检测谣言</p>
 
     <Form
       :model="formState"
@@ -56,7 +56,7 @@ async function handleSubmit() {
       class="register-form"
       @finish="handleSubmit"
     >
-      <Form.Item label="Email" name="email">
+      <Form.Item label="邮箱" name="email">
         <Input
           v-model:value="formState.email"
           size="large"
@@ -64,27 +64,27 @@ async function handleSubmit() {
         />
       </Form.Item>
 
-      <Form.Item label="Username" name="username">
+      <Form.Item label="用户名" name="username">
         <Input
           v-model:value="formState.username"
           size="large"
-          placeholder="Choose a username"
+          placeholder="请输入用户名"
         />
       </Form.Item>
 
-      <Form.Item label="Password" name="password">
+      <Form.Item label="密码" name="password">
         <Input.Password
           v-model:value="formState.password"
           size="large"
-          placeholder="At least 6 characters"
+          placeholder="至少6位字符"
         />
       </Form.Item>
 
-      <Form.Item label="Confirm Password" name="confirmPassword">
+      <Form.Item label="确认密码" name="confirmPassword">
         <Input.Password
           v-model:value="formState.confirmPassword"
           size="large"
-          placeholder="Confirm your password"
+          placeholder="请再次输入密码"
         />
       </Form.Item>
 
@@ -96,15 +96,15 @@ async function handleSubmit() {
           block
           :loading="loading"
         >
-          Create Account
+          注册
         </Button>
       </Form.Item>
     </Form>
 
     <p class="form-footer">
-      Already have an account?
+      已有账号？
       <router-link to="/auth/login" class="link-underline">
-        Sign in
+        立即登录
       </router-link>
     </p>
   </div>

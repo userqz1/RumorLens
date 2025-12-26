@@ -19,23 +19,23 @@ const riskColors: Record<RiskLevel, string> = {
 }
 
 const riskLabels: Record<RiskLevel, string> = {
-  low: 'LOW RISK',
-  medium: 'MEDIUM RISK',
-  high: 'HIGH RISK',
-  critical: 'CRITICAL',
+  low: '低风险',
+  medium: '中风险',
+  high: '高风险',
+  critical: '极高风险',
 }
 
 async function handleDetect() {
   if (!inputText.value.trim()) {
-    message.warning('Please enter text to analyze')
+    message.warning('请输入要分析的文本')
     return
   }
 
   try {
     await detectionStore.detectSingle(inputText.value)
-    message.success('Detection completed')
+    message.success('检测完成')
   } catch (error: any) {
-    message.error(error.response?.data?.detail || 'Detection failed')
+    message.error(error.response?.data?.detail || '检测失败')
   }
 }
 
@@ -48,20 +48,20 @@ function handleClear() {
 <template>
   <div class="detection-view">
     <header class="page-header">
-      <h1 class="page-title">Rumor Detection</h1>
+      <h1 class="page-title">谣言检测</h1>
       <p class="page-subtitle">
-        Enter Weibo text content for AI-powered rumor analysis
+        输入微博文本内容，使用AI进行谣言分析
       </p>
     </header>
 
     <div class="detection-grid">
       <!-- Input Section -->
       <Card class="input-card">
-        <h3 class="card-title">Input Text</h3>
+        <h3 class="card-title">输入文本</h3>
         <Input.TextArea
           v-model:value="inputText"
           :rows="10"
-          placeholder="Paste or type the Weibo content you want to analyze..."
+          placeholder="粘贴或输入要分析的微博内容..."
           :maxlength="5000"
           show-count
           class="input-textarea"
@@ -75,11 +75,11 @@ function handleClear() {
             @click="handleDetect"
           >
             <template #icon><SendOutlined /></template>
-            Analyze
+            开始分析
           </Button>
           <Button size="large" @click="handleClear">
             <template #icon><ClearOutlined /></template>
-            Clear
+            清空
           </Button>
         </div>
       </Card>
@@ -96,13 +96,13 @@ function handleClear() {
               {{ riskLabels[result.risk_level] }}
             </div>
             <div class="result-verdict">
-              {{ result.is_rumor ? 'POTENTIAL RUMOR' : 'LIKELY AUTHENTIC' }}
+              {{ result.is_rumor ? '疑似谣言' : '可能可信' }}
             </div>
           </div>
 
           <!-- Confidence Score -->
           <div class="confidence-section">
-            <div class="confidence-label">Credibility Score</div>
+            <div class="confidence-label">可信度评分</div>
             <Progress
               :percent="Math.round(result.confidence * 100)"
               :stroke-color="result.is_rumor ? 'var(--color-accent)' : 'var(--color-success)'"
@@ -113,29 +113,29 @@ function handleClear() {
 
           <!-- Explanation -->
           <div class="explanation-section">
-            <h4 class="section-label">Analysis</h4>
+            <h4 class="section-label">分析说明</h4>
             <p class="explanation-text">{{ result.explanation }}</p>
           </div>
 
           <!-- Analysis Details -->
           <template v-if="result.analysis">
             <Descriptions :column="1" class="analysis-details">
-              <Descriptions.Item label="Category">
+              <Descriptions.Item label="分类">
                 <Tag>{{ result.analysis.category }}</Tag>
               </Descriptions.Item>
-              <Descriptions.Item label="Sentiment">
+              <Descriptions.Item label="情感倾向">
                 <Tag :color="result.analysis.sentiment === 'negative' ? 'error' : 'default'">
-                  {{ result.analysis.sentiment }}
+                  {{ result.analysis.sentiment === 'positive' ? '正面' : result.analysis.sentiment === 'negative' ? '负面' : '中性' }}
                 </Tag>
               </Descriptions.Item>
-              <Descriptions.Item label="Keywords">
+              <Descriptions.Item label="关键词">
                 <div class="keywords-list">
                   <Tag v-for="keyword in result.analysis.keywords" :key="keyword">
                     {{ keyword }}
                   </Tag>
                 </div>
               </Descriptions.Item>
-              <Descriptions.Item label="Fact Check Points">
+              <Descriptions.Item label="事实核查要点">
                 <ul class="fact-list">
                   <li v-for="point in result.analysis.fact_check_points" :key="point">
                     {{ point }}
@@ -149,7 +149,7 @@ function handleClear() {
         <template v-else>
           <div class="empty-state">
             <div class="empty-icon">?</div>
-            <p class="empty-text">Enter text and click Analyze to see results</p>
+            <p class="empty-text">输入文本并点击分析查看结果</p>
           </div>
         </template>
       </Card>

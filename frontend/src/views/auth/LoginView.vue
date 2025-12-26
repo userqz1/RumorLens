@@ -17,19 +17,19 @@ const loading = ref(false)
 
 async function handleSubmit() {
   if (!formState.email || !formState.password) {
-    message.error('Please fill in all fields')
+    message.error('请填写所有字段')
     return
   }
 
   loading.value = true
   try {
     await authStore.login(formState.email, formState.password)
-    message.success('Login successful')
+    message.success('登录成功')
 
     const redirect = route.query.redirect as string
     router.push(redirect || '/')
   } catch (error: any) {
-    message.error(error.response?.data?.detail || 'Login failed')
+    message.error(error.response?.data?.detail || '登录失败')
   } finally {
     loading.value = false
   }
@@ -38,8 +38,8 @@ async function handleSubmit() {
 
 <template>
   <div class="login-view">
-    <h2 class="form-title">Sign In</h2>
-    <p class="form-subtitle">Enter your credentials to access your account</p>
+    <h2 class="form-title">登录</h2>
+    <p class="form-subtitle">请输入您的账号信息</p>
 
     <Form
       :model="formState"
@@ -47,7 +47,7 @@ async function handleSubmit() {
       class="login-form"
       @finish="handleSubmit"
     >
-      <Form.Item label="Email" name="email">
+      <Form.Item label="邮箱" name="email">
         <Input
           v-model:value="formState.email"
           size="large"
@@ -55,11 +55,11 @@ async function handleSubmit() {
         />
       </Form.Item>
 
-      <Form.Item label="Password" name="password">
+      <Form.Item label="密码" name="password">
         <Input.Password
           v-model:value="formState.password"
           size="large"
-          placeholder="Enter your password"
+          placeholder="请输入密码"
         />
       </Form.Item>
 
@@ -71,15 +71,15 @@ async function handleSubmit() {
           block
           :loading="loading"
         >
-          Sign In
+          登录
         </Button>
       </Form.Item>
     </Form>
 
     <p class="form-footer">
-      Don't have an account?
+      还没有账号？
       <router-link to="/auth/register" class="link-underline">
-        Create one
+        立即注册
       </router-link>
     </p>
   </div>

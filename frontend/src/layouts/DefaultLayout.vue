@@ -10,6 +10,7 @@ import {
   UserOutlined,
   LogoutOutlined,
   FileAddOutlined,
+  SettingOutlined,
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 
@@ -28,15 +29,16 @@ const selectedKeys = computed(() => {
   if (path === '/detection/batch') return ['batch']
   if (path === '/history') return ['history']
   if (path === '/dashboard') return ['dashboard']
+  if (path === '/settings') return ['settings']
   return []
 })
 
 const menuItems = [
-  { key: 'home', icon: HomeOutlined, label: 'Home', path: '/' },
-  { key: 'detection', icon: SearchOutlined, label: 'Detection', path: '/detection' },
-  { key: 'batch', icon: FileAddOutlined, label: 'Batch Detection', path: '/detection/batch' },
-  { key: 'history', icon: HistoryOutlined, label: 'History', path: '/history' },
-  { key: 'dashboard', icon: DashboardOutlined, label: 'Dashboard', path: '/dashboard' },
+  { key: 'home', icon: HomeOutlined, label: '首页', path: '/' },
+  { key: 'detection', icon: SearchOutlined, label: '谣言检测', path: '/detection' },
+  { key: 'batch', icon: FileAddOutlined, label: '批量检测', path: '/detection/batch' },
+  { key: 'history', icon: HistoryOutlined, label: '历史记录', path: '/history' },
+  { key: 'dashboard', icon: DashboardOutlined, label: '数据分析', path: '/dashboard' },
 ]
 
 function handleMenuClick({ key }: { key: string | number }) {
@@ -62,7 +64,7 @@ async function handleLogout() {
       class="layout-sider"
     >
       <div class="sider-logo" :class="{ collapsed }">
-        <span class="logo-text">{{ collapsed ? 'RL' : 'RumorLens' }}</span>
+        <span class="logo-text">{{ collapsed ? '谣' : '谣言透镜' }}</span>
       </div>
 
       <Menu
@@ -102,14 +104,14 @@ async function handleLogout() {
             </div>
             <template #overlay>
               <Menu>
-                <Menu.Item key="profile">
-                  <UserOutlined />
-                  <span>Profile</span>
+                <Menu.Item key="settings" @click="router.push('/settings')">
+                  <SettingOutlined />
+                  <span>账户设置</span>
                 </Menu.Item>
                 <Menu.Divider />
                 <Menu.Item key="logout" @click="handleLogout">
                   <LogoutOutlined />
-                  <span>Logout</span>
+                  <span>退出登录</span>
                 </Menu.Item>
               </Menu>
             </template>

@@ -76,8 +76,16 @@ class DetectionService:
             await self.db.flush()
             detection.analysis = analysis
 
-        await self.db.refresh(detection)
-        return detection
+        # Commit the transaction
+        await self.db.commit()
+
+        # Reload with eager loading to avoid lazy-load issues in async context
+        result = await self.db.execute(
+            select(Detection)
+            .options(selectinload(Detection.analysis))
+            .where(Detection.id == detection.id)
+        )
+        return result.scalar_one()
 
     async def detect_batch(
         self,
@@ -86,7 +94,7 @@ class DetectionService:
         include_analysis: bool = True,
     ) -> list[Detection]:
         """
-        Perform batch text detection.
+        Perform batch text detection using single API call.
 
         Args:
             user_id: The user performing the detection
@@ -96,21 +104,64 @@ class DetectionService:
         Returns:
             List of detection records
         """
-        detections = []
+        if not contents:
+            return []
 
-        for content in contents:
-            request = DetectionRequest(
-                content=content,
-                include_analysis=include_analysis,
-            )
+        # 调用DeepSeek批量检测API（一次检测多条）
+        results = await self.deepseek.detect_batch(contents)
+
+        detections = []
+        for i, (content, result) in enumerate(zip(contents, results)):
             try:
-                detection = await self.detect_single(user_id, request)
+                # Determine risk level
+                risk_level = RiskLevel.from_confidence(
+                    result["confidence"],
+                    result["is_rumor"],
+                )
+
+                # Create detection record
+                detection = Detection(
+                    user_id=user_id,
+                    content=content,
+                    is_rumor=result["is_rumor"],
+                    confidence=result["confidence"],
+                    risk_level=risk_level.value,
+                    explanation=result["explanation"],
+                    raw_response=result,
+                )
+                self.db.add(detection)
+                await self.db.flush()
+
+                # Create analysis record if requested
+                if include_analysis:
+                    analysis = Analysis(
+                        detection_id=detection.id,
+                        keywords=result.get("keywords", []),
+                        sentiment=result.get("sentiment", "neutral"),
+                        category=result.get("category", "other"),
+                        sources=result.get("sources", []),
+                        fact_check_points=result.get("fact_check_points", []),
+                    )
+                    self.db.add(analysis)
+                    await self.db.flush()
+                    detection.analysis = analysis
+
                 detections.append(detection)
             except Exception as e:
                 # Log error but continue with other items
                 continue
 
-        return detections
+        # Commit all at once
+        await self.db.commit()
+
+        # Reload with eager loading
+        detection_ids = [d.id for d in detections]
+        result = await self.db.execute(
+            select(Detection)
+            .options(selectinload(Detection.analysis))
+            .where(Detection.id.in_(detection_ids))
+        )
+        return list(result.scalars().all())
 
     async def get_detection_by_id(
         self,

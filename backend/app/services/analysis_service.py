@@ -5,7 +5,7 @@ from collections import Counter
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
-from sqlalchemy import and_, func, select
+from sqlalchemy import Integer, and_, case, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.detection import Analysis, Detection
@@ -82,7 +82,7 @@ class AnalysisService:
             select(
                 func.date(Detection.created_at).label("date"),
                 func.count().label("total"),
-                func.sum(func.cast(Detection.is_rumor, type_=func.Integer())).label(
+                func.sum(case((Detection.is_rumor == True, 1), else_=0)).label(
                     "rumors"
                 ),
             )

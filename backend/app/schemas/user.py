@@ -25,7 +25,7 @@ class UserCreate(UserBase):
         """Validate username format."""
         if not v.replace("_", "").replace("-", "").isalnum():
             raise ValueError(
-                "Username can only contain letters, numbers, underscores, and hyphens"
+                "用户名只能包含字母、数字、下划线和连字符"
             )
         return v
 
